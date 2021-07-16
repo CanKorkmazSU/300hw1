@@ -1,5 +1,9 @@
 #pragma once
 
+
+
+
+
 template<class Object>
 class Stack
 {
@@ -12,7 +16,7 @@ public:
     bool isFull() const;
     void makeEmpty();
 
-    void pop();
+    void pop() const;
     void push(const Object& x);
     Object topAndPop();
     const Object& top() const;

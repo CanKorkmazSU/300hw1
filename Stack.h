@@ -35,5 +35,6 @@ private:
 
     ListNode* topOfStack;  // list itself is the stack
 
+    friend class Maze;
 };
 

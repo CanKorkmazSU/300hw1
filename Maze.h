@@ -22,21 +22,34 @@ public:
 
 	bool CellApplicable(Cell& checkCell, string direction);
 	
-	void AddToStackMain(Cell & checkedCell);
-	bool StackCheckerDetail(Cell & toBeChecked);
+	//void AddToStackMain(Cell & checkedCell);
+	bool StackCheckerDetail(int corX, int corY);
 	void FillOriginalAgain();
+
 	void PrintFunction();
 
-	void ProcessCell(int cor1, int cor2, string direction);
+	//check whether any wall to break or not
+	int existApplicableCell(int corX, int corY);
+
+	// call when no applicable cells exist to go
+	void whenNoneApplicableCell();
+
+	void ProcessCells(int cor1, int cor2, string direction);
 
 private:
-	int K, M, N, entryX, entryY;
+	//K-> number of mazes, M: Xcoordintte(columns), N: Ycoordinate(rows)
+	int K, M , N, entryX, entryY;
 	
 	int curX, curY;
 
 	vector<vector<Cell>>  tryVec;
 	Stack<Cell> mainStack, sideStack;
+	Stack<string> stringStack;
 };
 
 
-// 
+// to do *****
+//
+//implement the existApplicableCell and later path finding
+//for existApplicableCell, you need prolly. to more functions; random
+

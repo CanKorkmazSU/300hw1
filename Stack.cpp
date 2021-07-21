@@ -1,4 +1,6 @@
 #include "Stack.h"
+
+
 template <class Object>
 Stack<Object>::Stack()
 {

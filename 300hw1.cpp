@@ -1,8 +1,13 @@
 #include <iostream>
 #include "Stack.h"
 #include "Maze.h"
-#include "Maze.cpp"
+#include <string>
+#include <vector>
+#include <fstream>
+
 using namespace std;
+
+
 
 int main()
 {
@@ -13,6 +18,13 @@ int main()
 
 	for (int i = 0; i < K; i++) {
 		mazeVec[i]= Maze(M,N);
+	}
+
+	ofstream myOfStream;
+
+	for (int i = 0; i < K; i++) {
+		myOfStream.open(("Maze_" + to_string(i) + ".txt").c_str());
+		mazeVec[i].PrintFunction();
 	}
 
 

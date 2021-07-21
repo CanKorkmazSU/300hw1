@@ -1,8 +1,5 @@
 #pragma once
-
-
-
-
+#include "Maze.h"
 
 template<class Object>
 class Stack
@@ -37,4 +34,5 @@ private:
 
     friend class Maze;
 };
+
 

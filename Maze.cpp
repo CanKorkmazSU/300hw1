@@ -2,13 +2,14 @@
 #include "Stack.h"
 #include <vector>
 #include <string>
+#include <iostream>
 #include <random>
 using namespace std;
 
-Maze::Maze(int X, int Y) {
+
+Maze::Maze(int X , int Y) {
 	M = X, N = Y;
 	curX = 0, curY = 0;
-	int brokenWalls =0;
 	tryVec.resize(M, vector<Cell>());
 
 	for (int i = 0; i < M; i++) {
@@ -22,15 +23,66 @@ Maze::Maze(int X, int Y) {
 		}
 	}
 	
-	while (brokenWalls != M * N - 1) {
+	int c= rand() %3;
+	numBroken = 0;
+	string direction;
 
+	curX = 0, curY = 0;
+
+	if(M==1 && N==1) {
+		return;
 	}
+	else if (M!=1 || N!=1) {
+		while (numBroken < 1) {
+			c = rand() % 3;
+			if (c == 0 ) {
+				CellApplicable(tryVec[curX][curY], "left");
+				continue;
+			}
+			else if (c == 1) {
+				CellApplicable(tryVec[curX][curY], "up");
+				continue;
 
+			}
+			else if (c == 2) {
+				CellApplicable(tryVec[curX][curY], "right");
+				continue;
 
+			}
+			else if (c = 3) {
+				CellApplicable(tryVec[curX][curY], "down");
+				continue;
+
+			}
+		}
+		while (numBroken != M * N - 1) {
+			c = rand() % 3;
+			if (c == 0 && existApplicableCell(curX, curY)) {
+				CellApplicable(tryVec[curX][curY], "left");
+				continue;
+			}
+			else if (c == 1 && existApplicableCell(curX, curY)) {
+				CellApplicable(tryVec[curX][curY], "up");
+				continue;
+
+			}
+			else if (c == 2 && existApplicableCell(curX, curY)) {
+				CellApplicable(tryVec[curX][curY], "right");
+				continue;
+			}
+			else if (c = 3&& existApplicableCell(curX, curY)) {
+				CellApplicable(tryVec[curX][curY], "down");
+				continue;
+			}
+			else {
+				whenNoneApplicableCell(stringStack.topAndPop());
+			}
+		}
+	}
 }
 
 // Checks if directed Cell can be added to stack, pushs if can be, returns false otherwise
-bool Maze::CellApplicable(Cell& checkCell, string direction)
+bool Maze::CellApplicable(Cell& checkCell, const string & direction)
 {
 	if (direction == "up"&& checkCell.coorY+1<N) {
 		if (StackCheckerDetail(checkCell.coorX,checkCell.coorY + 1)) {
@@ -93,6 +145,11 @@ void Maze::FillOriginalAgain()
 
 void Maze::PrintFunction()
 {
+	for (int i = 0; i < M; i++) {
+		for (int j = 0; j < N; j++) {
+			cout << "x= " << i << " y=" << j;;
+		}
+	}
 }
 
 // returns count of ApplicableCells
@@ -112,26 +169,56 @@ int Maze::existApplicableCell(int corX, int corY)
 }
 
 
+void Maze::whenNoneApplicableCell(string prevDirection)
+{
+	if (prevDirection == "left") {
+		curX++;
+		return;
+	}
+	else if (prevDirection == "right") {
+		curX--;
+		return;
+	}
+	else if (prevDirection == "top") {
+		curY--;
+		return;
+	}
+	else if (prevDirection == "down") {
+		curY++;
+		return;
+	}
+}
 
+// process both cells (wall stiuations) and change curX and curY
 void Maze::ProcessCells(int cor1, int cor2, string direction)
 {
 	if (direction == "up") {
 		tryVec[cor1][cor2].u = 0;
 		tryVec[cor1][cor2+1].d = 0;
-
+		curY++;
+		numBroken++;
+		stringStack.push(direction);
 	}
 	else if (direction == "down") {
 		tryVec[cor1][cor2].d = 0;
 		tryVec[cor1][cor2 - 1].u = 0;
+		curY--;
+		numBroken++;
+		stringStack.push(direction);
 	}
 	else if (direction == "right") {
 		tryVec[cor1][cor2].r = 0;
 		tryVec[cor1+1][cor2 ].l = 0;
-
+		curX++;
+		numBroken++;
+		stringStack.push(direction);
 	}
 	else if (direction == "left") {
 		tryVec[cor1][cor2].l = 0;
 		tryVec[cor1 - 1][cor2].r = 0;
+		curX--;
+		numBroken++;
+		stringStack.push(direction);
 	}
 }
 

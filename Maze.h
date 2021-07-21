@@ -1,8 +1,9 @@
 #pragma once
+
 #include <vector>
 #include "Stack.h"
-#include "Stack.cpp"
 #include <string>
+#include <random>
 
 using namespace std;
 
@@ -18,9 +19,9 @@ struct Cell {
 class Maze
 {
 public:
-	Maze(int X, int Y);
+	Maze(int X=0, int Y=0);
 
-	bool CellApplicable(Cell& checkCell, string direction);
+	bool CellApplicable(Cell& checkCell, const string& direction);
 	
 	//void AddToStackMain(Cell & checkedCell);
 	bool StackCheckerDetail(int corX, int corY);
@@ -31,8 +32,8 @@ public:
 	//check whether any wall to break or not
 	int existApplicableCell(int corX, int corY);
 
-	// call when no applicable cells exist to go
-	void whenNoneApplicableCell();
+	// call when no applicable cells exist to go, dont forget to update curX and curY, also process stacks
+	void whenNoneApplicableCell(string prevDirection);
 
 	void ProcessCells(int cor1, int cor2, string direction);
 
@@ -40,11 +41,13 @@ private:
 	//K-> number of mazes, M: Xcoordintte(columns), N: Ycoordinate(rows)
 	int K, M , N, entryX, entryY;
 	
-	int curX, curY;
+	int curX , curY  , numBroken;
 
 	vector<vector<Cell>>  tryVec;
 	Stack<Cell> mainStack, sideStack;
-	Stack<string> stringStack;
+	Stack<string> stringStack, stringPopped;// for directions
+
+
 };
 
 

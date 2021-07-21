@@ -1,11 +1,16 @@
-#include "Stack.h"
 
+#ifndef _STACK_CPP
+#define _STACK_CPP
+
+#include <assert.h>
+#include "Stack.h"
 
 template <class Object>
 Stack<Object>::Stack()
 {
     topOfStack = NULL;
 }
+
 template <class Object>
 bool Stack<Object>::isFull() const
 {
@@ -19,15 +24,17 @@ bool Stack<Object>::isEmpty() const
 template <class Object>
 const Object& Stack<Object>::top() const
 {
-    if (isEmpty())
-        throw Underflow();
+    assert(!isEmpty());
+
+   /* if (isEmpty())
+        throw Underflow();*/
     return topOfStack->element;
 }
+
 template <class Object>
-void Stack<Object>::pop() const
+void Stack<Object>::pop() 
 {
-    if (isEmpty())
-        throw Underflow();
+    assert(!isEmpty());
     ListNode* oldTop = topOfStack;
     topOfStack = topOfStack->next;
     delete oldTop;
@@ -83,3 +90,4 @@ Stack<Object>::~Stack()
 }
 
 
+#endif // !1

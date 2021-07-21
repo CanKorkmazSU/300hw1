@@ -4,9 +4,11 @@
 #include <string>
 #include <iostream>
 #include <random>
+#include <iomanip>
+#include <algorithm>
 using namespace std;
 
-
+// reimplement maze creation with a function in a neat-er style if you want
 Maze::Maze(int X , int Y) {
 	M = X, N = Y;
 	curX = 0, curY = 0;
@@ -33,53 +35,35 @@ Maze::Maze(int X , int Y) {
 		return;
 	}
 	else if (M!=1 || N!=1) {
-		while (numBroken < 1) {
-			c = rand() % 3;
-			if (c == 0 ) {
-				CellApplicable(tryVec[curX][curY], "left");
+		/*while (numBroken < 1) {
+			c = RandomReturn();
+			if (c == 0 && CellApplicable(tryVec[curX][curY], "up")) {
 				continue;
 			}
-			else if (c == 1) {
-				CellApplicable(tryVec[curX][curY], "up");
-				continue;
-
-			}
-			else if (c == 2) {
-				CellApplicable(tryVec[curX][curY], "right");
-				continue;
-
-			}
-			else if (c = 3) {
-				CellApplicable(tryVec[curX][curY], "down");
-				continue;
-
-			}
-		}
-		while (numBroken != M * N - 1) {
-			c = rand() % 3;
-			if (c == 0 && existApplicableCell(curX, curY)) {
-				CellApplicable(tryVec[curX][curY], "left");
+			else if (c == 1 && CellApplicable(tryVec[curX][curY], "right")) {
 				continue;
 			}
-			else if (c == 1 && existApplicableCell(curX, curY)) {
-				CellApplicable(tryVec[curX][curY], "up");
-				continue;
-
-			}
-			else if (c == 2 && existApplicableCell(curX, curY)) {
-				CellApplicable(tryVec[curX][curY], "right");
-				continue;
-			}
-			else if (c = 3&& existApplicableCell(curX, curY)) {
-				CellApplicable(tryVec[curX][curY], "down");
-				continue;
+		}*/
+		c = rand() % 3;
+		while (numBroken < M * N - 1) {
+			if (existApplicableCell(curX, curX)) {
+				c = RandomReturn();
+				switch (c) {
+				case 0: CellApplicable(tryVec[curX][curY], "left"); break;
+				case 1: CellApplicable(tryVec[curX][curY], "right"); break;
+				case 2: CellApplicable(tryVec[curX][curY], "up"); break;
+				case 3: CellApplicable(tryVec[curX][curY], "down"); break;
+				}
 			}
 			else {
 				whenNoneApplicableCell(stringStack.topAndPop());
 			}
 		}
 	}
+
+
 }
+
 
 // Checks if directed Cell can be added to stack, pushs if can be, returns false otherwise
 bool Maze::CellApplicable(Cell& checkCell, const string & direction)
@@ -118,14 +102,42 @@ bool Maze::CellApplicable(Cell& checkCell, const string & direction)
 	return false;
 }
 
-//takes coordinates for target cell
-bool Maze::StackCheckerDetail(int corX, int corY) // return true if target cell not visited, false otherwise
+bool Maze::OnlyCellApplicable(Cell& checkCell, const string& direction)
+{
+
+	if (direction == "up" && checkCell.coorY + 1 < N) {
+		if (StackCheckerDetail(checkCell.coorX, checkCell.coorY + 1)) {
+			return true;
+		}
+	}
+	else if (direction == "down" && checkCell.coorY - 1 >= 0) {
+		if (StackCheckerDetail(checkCell.coorX, checkCell.coorY - 1)) {
+		
+			return true;
+		}
+	}
+	else if (direction == "left" && checkCell.coorX - 1 >= 0) {
+		if (StackCheckerDetail(checkCell.coorX - 1, checkCell.coorY)) {
+		
+			return true;
+		}
+	}
+	else if (direction == "right" && checkCell.coorX + 1 < M) {
+		if (StackCheckerDetail(checkCell.coorX + 1, checkCell.coorY)) {			
+			return true;
+		}
+	}
+	return false;
+}
+
+//takes coordinates for target cell, return true if target cell not visited, false otherwise
+bool Maze::StackCheckerDetail(int corX, int corY) 
 {
 	Cell popped;
 	while (!mainStack.isEmpty()) {
 		popped = mainStack.topAndPop();
 		sideStack.push(popped);
-		if (!(corX == popped.coorX && corY == popped.coorY)) {
+		if ((corX == popped.coorX && corY == popped.coorY)) {
 			FillOriginalAgain();
 			return false;
 		}
@@ -143,13 +155,16 @@ void Maze::FillOriginalAgain()
 	}
 }
 
-void Maze::PrintFunction()
+void Maze::PrintFunction(ofstream & toWrite)
 {
+	toWrite << M << " " << N << endl;
 	for (int i = 0; i < M; i++) {
 		for (int j = 0; j < N; j++) {
-			cout << "x= " << i << " y=" << j;;
+			toWrite << "x=" << i << " y=" << j << " l= " <<tryVec[i][j].l <<
+				" r=" <<tryVec[i][j].r << " u=" << tryVec[i][j].u << " d=" << tryVec[i][j].d << endl;
 		}
 	}
+	toWrite.close();
 }
 
 // returns count of ApplicableCells
@@ -168,7 +183,7 @@ int Maze::existApplicableCell(int corX, int corY)
 	return count;
 }
 
-
+// what to do when no applicable cells exists, call this func
 void Maze::whenNoneApplicableCell(string prevDirection)
 {
 	if (prevDirection == "left") {
@@ -222,6 +237,95 @@ void Maze::ProcessCells(int cor1, int cor2, string direction)
 	}
 }
 
+int Maze::RandomReturn()
+{
+	int t = existApplicableCell(curX, curY),  c;
+	if (t == 4) {
+		return (rand() % 3);
+	}
+	else if (t==3){
+		if (!OnlyCellApplicable(tryVec[curX][curY], "left")) {
+			return (rand() % 1 + 2);
+		}
+		else if (!OnlyCellApplicable(tryVec[curX][curY], "right")) {
+			c = rand() % 2;
+			switch (c) {
+			case 0: return 0; 
+			case 1: return 2;
+			case 2: return 3;
+			}
+		}
+		else if (!OnlyCellApplicable(tryVec[curX][curY], "up")) {
+			c = rand() % 2;
+			switch (c) {
+			case 0: return 0;
+			case 1: return 1;
+			case 2: return 3;
+			}
+		}
+		else if (!OnlyCellApplicable(tryVec[curX][curY], "down")) {
+			return (rand() % 2);
+		}
+		
+	}
+	else if (t == 2) {
+		if (!OnlyCellApplicable(tryVec[curX][curY], "left") && !OnlyCellApplicable(tryVec[curX][curY], "right")) {
+			return (rand() % 2 + 1);
+		}
+		else if (!OnlyCellApplicable(tryVec[curX][curY], "left") && !OnlyCellApplicable(tryVec[curX][curY], "up")) {
+			c = rand() % 1;
+			switch (c) {
+			case 0: return 1;
+			case 1: return 3;
+			}
+		}
+		else if (!OnlyCellApplicable(tryVec[curX][curY], "left") && !OnlyCellApplicable(tryVec[curX][curY], "down")) {
+			c = rand() % 1;
+			switch (c) {
+			case 0: return 1;
+			case 1: return 2;
+			}
+		}
+		else if (!OnlyCellApplicable(tryVec[curX][curY], "right") && !OnlyCellApplicable(tryVec[curX][curY], "up")) {
+			c = rand() % 1;
+			switch (c) {
+			case 0: return 0;
+			case 1: return 3;
+			}
+		}
+		else if (!OnlyCellApplicable(tryVec[curX][curY], "right") && !OnlyCellApplicable(tryVec[curX][curY], "down")) {
+			c = rand() % 1;
+			switch (c) {
+			case 0: return 1;
+			case 1: return 2;
+			}
+		}
+		else if (!OnlyCellApplicable(tryVec[curX][curY], "up") && !OnlyCellApplicable(tryVec[curX][curY], "down")) {
+			return (rand() % 1);
+		}
+	}
+	else if (t == 1) {
+		if (OnlyCellApplicable(tryVec[curX][curY], "left")) return 0;
+		if (OnlyCellApplicable(tryVec[curX][curY], "right")) return 1;
+		if (OnlyCellApplicable(tryVec[curX][curY], "up")) return 2;
+		if (OnlyCellApplicable(tryVec[curX][curY], "down")) return 3;
 
+	}
+	t = 100;
+	cout << "error: t=100"<< endl << endl ;
+	assert(t!=100);
+	return 100;
+}
+
+
+
+/// <summary>
+///  path finding parth
+/// </summary>
+
+void Maze::PathFinding(ofstream & toWrite)
+{
+	
+}
 
 

@@ -4,6 +4,7 @@
 #include "Stack.h"
 #include <string>
 #include <random>
+#include <fstream>
 
 using namespace std;
 
@@ -22,31 +23,35 @@ public:
 	Maze(int X=0, int Y=0);
 
 	bool CellApplicable(Cell& checkCell, const string& direction);
+	bool OnlyCellApplicable(Cell& checkCell, const string& direction); // does nothing but return a bool
+
 	
 	//void AddToStackMain(Cell & checkedCell);
 	bool StackCheckerDetail(int corX, int corY);
 	void FillOriginalAgain();
 
-	void PrintFunction();
+	void PrintFunction(ofstream & toWrite);
+	void PathFinding(ofstream & toWrite);
 
-	//check whether any wall to break or not
+	//check whether any wall to break or not, return number of breakable wall
 	int existApplicableCell(int corX, int corY);
 
 	// call when no applicable cells exist to go, dont forget to update curX and curY, also process stacks
 	void whenNoneApplicableCell(string prevDirection);
 
 	void ProcessCells(int cor1, int cor2, string direction);
+	int RandomReturn();
 
 private:
 	//K-> number of mazes, M: Xcoordintte(columns), N: Ycoordinate(rows)
-	int K, M , N, entryX, entryY;
+	int M , N, entryX, entryY;
 	
 	int curX , curY  , numBroken;
 
-	vector<vector<Cell>>  tryVec;
+	vector<vector<Cell>>  tryVec; // holds cells
 	Stack<Cell> mainStack, sideStack;
 	Stack<string> stringStack, stringPopped;// for directions
-
+	Stack<Cell> pathStack1, pathStack2;
 
 };
 

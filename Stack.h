@@ -1,5 +1,6 @@
 #pragma once
-#include "Maze.h"
+#ifndef _STACK_H
+#define _STACK_H
 
 template<class Object>
 class Stack
@@ -13,10 +14,11 @@ public:
     bool isFull() const;
     void makeEmpty();
 
-    void pop() const;
+    void pop() ;
     void push(const Object& x);
     Object topAndPop();
     const Object& top() const;
+    //void Underflow();
 
     const Stack& operator=(const Stack& rhs);
 
@@ -35,4 +37,6 @@ private:
     friend class Maze;
 };
 
+#include "Stack.cpp"
 
+#endif

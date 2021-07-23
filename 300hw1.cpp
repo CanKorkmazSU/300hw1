@@ -25,6 +25,7 @@ int main()
 	for (int i = 0; i < K; i++) {
 		ofStreamPrint.open(("Maze_" + to_string(i) + ".txt").c_str());
 		mazeVec[i].PrintFunction(ofStreamPrint);
+		ofStreamPath.close();
 	}
 	cout << "Enter a maze ID between 1 to "<< K << " inclusive to find a path: ";
 	cin >> mazeID;

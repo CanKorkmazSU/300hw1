@@ -33,16 +33,8 @@ Maze::Maze(int X , int Y) {
 	if(M==1 && N==1) {
 		return;
 	}
-	/*else if (curX == 0 && curY == 0) {
-		switch (c) {
-		case 0: mainStack.push(tryVec[curX][curY]); curY++; stringStack.push("up"); 
-			tryVec[0][0].u = 0; tryVec[0][1].d = 0; numBroken++; break;
-		case 1:mainStack.push(tryVec[curX][curY]); curX++; stringStack.push("right");
-			tryVec[0][0].r = 0; tryVec[1][0].l = 0; numBroken++; break;
-		}
-	}*/
 	else if (M!=1 || N!=1) {
-		while (numBroken < M * N - 1) {
+		while (numBroken < M * N -1) {
 			if (curX == 0 && curY == 0) {
 				switch (c) {
 				case 0:  mainStack.topOfStack->element.u=0; mainStack.push(tryVec[curX][curY+1]); mainStack.topOfStack->element.d = 0;
@@ -52,7 +44,7 @@ Maze::Maze(int X , int Y) {
 					tryVec[0][0].r = 0; tryVec[1][0].l = 0; numBroken++; break;
 				}
 			}
-			else if (existApplicableCell(curX, curX)) {
+			else if (existApplicableCell(curX, curY)) {
 				c = RandomReturn();
 				switch (c) {
 				case 0: CellApplicable(tryVec[curX][curY], "left"); break;
@@ -62,7 +54,7 @@ Maze::Maze(int X , int Y) {
 				}
 			}
 			else {
-				whenNoneApplicableCell(stringStack.topAndPop());
+				whenNoneApplicableCell(stringStack.top());
 			}
 		}
 	}
@@ -74,14 +66,18 @@ bool Maze::CellApplicable(Cell& checkCell, const string & direction)
 {
 	if (direction == "up"&& checkCell.coorY+1<N) {
 		if (StackCheckerDetail(checkCell.coorX,checkCell.coorY + 1)) {
+			mainStack.topOfStack->element.u = 0;
 			mainStack.push(tryVec[checkCell.coorX][checkCell.coorY + 1]);
+			mainStack.topOfStack->element.d = 0;
 			stringStack.push(direction);
 			ProcessCells(checkCell.coorX, checkCell.coorY, direction);
 			return true; }
 	}
 	else if (direction == "down" && checkCell.coorY -1 >=0) {
 		if (StackCheckerDetail(checkCell.coorX,checkCell.coorY - 1)) {
+			mainStack.topOfStack->element.d = 0;
 			mainStack.push(tryVec[checkCell.coorX][checkCell.coorY - 1]);
+			mainStack.topOfStack->element.u = 0;
 			stringStack.push(direction);
 			ProcessCells(checkCell.coorX, checkCell.coorY, direction);
 			return true;
@@ -89,7 +85,9 @@ bool Maze::CellApplicable(Cell& checkCell, const string & direction)
 	}
 	else if (direction == "left" && checkCell.coorX -1>=0) {
 		if (StackCheckerDetail(checkCell.coorX - 1,checkCell.coorY)) { 
+			mainStack.topOfStack->element.l = 0;
 			mainStack.push(tryVec[checkCell.coorX-1][checkCell.coorY ]);
+			mainStack.topOfStack->element.r = 0;
 			stringStack.push(direction);
 			ProcessCells(checkCell.coorX, checkCell.coorY , direction);
 			return true; 
@@ -97,7 +95,9 @@ bool Maze::CellApplicable(Cell& checkCell, const string & direction)
 	}
 	else if (direction == "right"&& checkCell.coorX +1 <M) {
 		if (StackCheckerDetail(checkCell.coorX + 1,checkCell.coorY)) {
+			mainStack.topOfStack->element.r = 0;
 			mainStack.push(tryVec[checkCell.coorX+1][checkCell.coorY ]);
+			mainStack.topOfStack->element.l = 0;
 			stringStack.push(direction);
 			ProcessCells(checkCell.coorX, checkCell.coorY , direction);
 			return true;
@@ -114,22 +114,28 @@ bool Maze::OnlyCellApplicable(Cell& checkCell, const string& direction)
 		if (StackCheckerDetail(checkCell.coorX, checkCell.coorY + 1)) {
 			return true;
 		}
+		else return false;
 	}
 	else if (direction == "down" && checkCell.coorY - 1 >= 0) {
 		if (StackCheckerDetail(checkCell.coorX, checkCell.coorY - 1)) {
 		
 			return true;
 		}
+		else return false;
+
 	}
 	else if (direction == "left" && checkCell.coorX - 1 >= 0) {
 		if (StackCheckerDetail(checkCell.coorX - 1, checkCell.coorY)) {
 			return true;
 		}
+		else return false;
+
 	}
 	else if (direction == "right" && checkCell.coorX + 1 < M) {
 		if (StackCheckerDetail(checkCell.coorX + 1, checkCell.coorY)) {			
 			return true;
 		}
+		else return false;
 	}
 	return false;
 }
@@ -178,11 +184,11 @@ int Maze::existApplicableCell(int corX, int corY)
 
 	if (corX + 1 < M && StackCheckerDetail(corX + 1, corY))// right
 		count++;
-	else if (corX - 1 >= 0 && StackCheckerDetail(corX - 1, corY))//left
+	if (corX - 1 >= 0 && StackCheckerDetail(corX - 1, corY))//left
 		count++;
-	else if (corY - 1 >= 0 && StackCheckerDetail(corX, corY - 1))//down
+	if (corY - 1 >= 0 && StackCheckerDetail(corX, corY - 1))//down
 		count++;
-	else if (corY + 1 < N && StackCheckerDetail(corX, corY + 1))
+	if (corY + 1 < N && StackCheckerDetail(corX, corY + 1))
 		count++;
 	return count;
 }
@@ -190,6 +196,7 @@ int Maze::existApplicableCell(int corX, int corY)
 // what to do when no applicable cells exists, call this func
 void Maze::whenNoneApplicableCell(string prevDirection)
 {
+	stringStack.pop();
 	if (prevDirection == "left") {
 		curX++;
 		return;
@@ -198,7 +205,7 @@ void Maze::whenNoneApplicableCell(string prevDirection)
 		curX--;
 		return;
 	}
-	else if (prevDirection == "top") {
+	else if (prevDirection == "up") {
 		curY--;
 		return;
 	}
@@ -216,28 +223,24 @@ void Maze::ProcessCells(int cor1, int cor2, string direction)
 		tryVec[cor1][cor2+1].d = 0;
 		curY++;
 		numBroken++;
-		stringStack.push(direction);
 	}
 	else if (direction == "down") {
 		tryVec[cor1][cor2].d = 0;
 		tryVec[cor1][cor2 - 1].u = 0;
 		curY--;
 		numBroken++;
-		stringStack.push(direction);
 	}
 	else if (direction == "right") {
 		tryVec[cor1][cor2].r = 0;
 		tryVec[cor1+1][cor2 ].l = 0;
 		curX++;
 		numBroken++;
-		stringStack.push(direction);
 	}
 	else if (direction == "left") {
 		tryVec[cor1][cor2].l = 0;
 		tryVec[cor1 - 1][cor2].r = 0;
 		curX--;
 		numBroken++;
-		stringStack.push(direction);
 	}
 }
 
@@ -249,7 +252,12 @@ int Maze::RandomReturn()
 	}
 	else if (t==3){
 		if (!OnlyCellApplicable(tryVec[curX][curY], "left")) {
-			return (rand() % 1 + 2);
+			c = rand() % 3;
+			switch (c) {
+			case 0: return 1;
+			case 1: return 2;
+			case 2: return 3;
+			}
 		}
 		else if (!OnlyCellApplicable(tryVec[curX][curY], "right")) {
 			c = rand() % 3;
@@ -274,12 +282,16 @@ int Maze::RandomReturn()
 	}
 	else if (t == 2) {
 		if (!OnlyCellApplicable(tryVec[curX][curY], "left") && !OnlyCellApplicable(tryVec[curX][curY], "right")) {
-			return (rand() % 2 + 1);
+			c = rand() % 2;
+			switch (c) {
+			case 0: return 2;
+			case 1: return 3;
+			}
 		}
 		else if (!OnlyCellApplicable(tryVec[curX][curY], "left") && !OnlyCellApplicable(tryVec[curX][curY], "up")) {
 			c = rand() % 2;
 			switch (c) {
-			case 0: return 1;
+			case 0: return 1; 
 			case 1: return 3;
 			}
 		}
@@ -300,7 +312,7 @@ int Maze::RandomReturn()
 		else if (!OnlyCellApplicable(tryVec[curX][curY], "right") && !OnlyCellApplicable(tryVec[curX][curY], "down")) {
 			c = rand() % 2;
 			switch (c) {
-			case 0: return 1;
+			case 0: return 0;
 			case 1: return 2;
 			}
 		}
@@ -368,10 +380,15 @@ int Maze::RandomReturnPathfinding() {
 	
 	if(t==3){
 		if (!OnlyCellApplicablePathfinding(tryVec[curX][curY], "left")) {
-			return (rand() % 1 + 2);
+			c = rand() % 3;
+			switch (c) {
+			case 0: return 1;
+			case 1: return 2;
+			case 2: return 3;
+			}
 		}
 		else if (!OnlyCellApplicablePathfinding(tryVec[curX][curY], "right")) {
-			c = rand() % 2;
+			c = rand() % 3;
 			switch (c) {
 			case 0: return 0;
 			case 1: return 2;
@@ -379,7 +396,7 @@ int Maze::RandomReturnPathfinding() {
 			}
 		}
 		else if (!OnlyCellApplicablePathfinding(tryVec[curX][curY], "up")) {
-			c = rand() % 2;
+			c = rand() % 3;
 			switch (c) {
 			case 0: return 0;
 			case 1: return 1;
@@ -387,43 +404,47 @@ int Maze::RandomReturnPathfinding() {
 			}
 		}
 		else if (!OnlyCellApplicablePathfinding(tryVec[curX][curY], "down")) {
-			return (rand() % 2);
+			return (rand() % 3);
 		}
 	}
 	else if (t == 2) {
 		if (!OnlyCellApplicablePathfinding(tryVec[curX][curY], "left") && !OnlyCellApplicablePathfinding(tryVec[curX][curY], "right")) {
-			return (rand() % 2 + 1);
+			c = rand() % 2;
+			switch (c) {
+			case 0: return 2;
+			case 1: return 3;
+			}
 		}
 		else if (!OnlyCellApplicablePathfinding(tryVec[curX][curY], "left") && !OnlyCellApplicablePathfinding(tryVec[curX][curY], "up")) {
-			c = rand() % 1;
+			c = rand() % 2;
 			switch (c) {
 			case 0: return 1;
 			case 1: return 3;
 			}
 		}
 		else if (!OnlyCellApplicablePathfinding(tryVec[curX][curY], "left") && !OnlyCellApplicablePathfinding(tryVec[curX][curY], "down")) {
-			c = rand() % 1;
+			c = rand() % 2;
 			switch (c) {
 			case 0: return 1;
 			case 1: return 2;
 			}
 		}
 		else if (!OnlyCellApplicablePathfinding(tryVec[curX][curY], "right") && !OnlyCellApplicablePathfinding(tryVec[curX][curY], "up")) {
-			c = rand() % 1;
+			c = rand() % 2;
 			switch (c) {
 			case 0: return 0;
 			case 1: return 3;
 			}
 		}
 		else if (!OnlyCellApplicablePathfinding(tryVec[curX][curY], "right") && !OnlyCellApplicablePathfinding(tryVec[curX][curY], "down")) {
-			c = rand() % 1;
+			c = rand() % 2;
 			switch (c) {
 			case 0: return 1;
 			case 1: return 2;
 			}
 		}
 		else if (!OnlyCellApplicablePathfinding(tryVec[curX][curY], "up") && !OnlyCellApplicablePathfinding(tryVec[curX][curY], "down")) {
-			return (rand() % 1);
+			return (rand() % 2);
 		}
 	}
 	else if (t == 1) {
@@ -487,7 +508,7 @@ int Maze::existApplicableCellPathfinding(int corX, int corY)
 }
 
 // call if you diverge into wrong path
-// implementation completed
+// implementation complete
 void Maze::whenNoneApplicableCellPathfinding()
 {
 	string prev;
@@ -513,7 +534,7 @@ void Maze::whenNoneApplicableCellPathfinding()
 	}
 }
 
-//implementation complete
+// implementation failed, re-implement
 bool Maze::OnlyCellApplicablePathfinding(Cell& checkCell, const string& direction)
 {
 	if (direction == "up" && checkCell.coorY + 1 < N && stringStackPath.top()!= "up") return true;

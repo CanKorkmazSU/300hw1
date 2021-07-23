@@ -62,7 +62,7 @@ private:
 
 	vector<vector<Cell>>  tryVec; // holds cells
 	Stack<Cell> mainStack, sideStack;
-	Stack<string> stringStack, stringPopped;// for directions
+	Stack<string> stringStack;// for directions
 
 	Stack<string> stringStackPath, stringPoppedPath;// for directions of second part
 	Stack<Cell> pathStack1, pathStack2;

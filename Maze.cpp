@@ -23,18 +23,36 @@ Maze::Maze(int X , int Y) {
 		}
 	}
 	
-	int c= rand() %3;
+	int c = rand()%2;
 	numBroken = 0;
 	string direction;
 
 	curX = 0, curY = 0;
-
+	mainStack.push(tryVec[0][0]);
+	
 	if(M==1 && N==1) {
 		return;
 	}
+	/*else if (curX == 0 && curY == 0) {
+		switch (c) {
+		case 0: mainStack.push(tryVec[curX][curY]); curY++; stringStack.push("up"); 
+			tryVec[0][0].u = 0; tryVec[0][1].d = 0; numBroken++; break;
+		case 1:mainStack.push(tryVec[curX][curY]); curX++; stringStack.push("right");
+			tryVec[0][0].r = 0; tryVec[1][0].l = 0; numBroken++; break;
+		}
+	}*/
 	else if (M!=1 || N!=1) {
 		while (numBroken < M * N - 1) {
-			if (existApplicableCell(curX, curX)) {
+			if (curX == 0 && curY == 0) {
+				switch (c) {
+				case 0:  mainStack.topOfStack->element.u=0; mainStack.push(tryVec[curX][curY+1]); mainStack.topOfStack->element.d = 0;
+					curY++; stringStack.push("up");
+					tryVec[0][0].u = 0; tryVec[0][1].d = 0; numBroken++;  break;
+				case 1: mainStack.topOfStack->element.r = 0; mainStack.push(tryVec[curX+1][curY]); mainStack.topOfStack->element.l = 0; curX++; stringStack.push("right");
+					tryVec[0][0].r = 0; tryVec[1][0].l = 0; numBroken++; break;
+				}
+			}
+			else if (existApplicableCell(curX, curX)) {
 				c = RandomReturn();
 				switch (c) {
 				case 0: CellApplicable(tryVec[curX][curY], "left"); break;
@@ -227,14 +245,14 @@ int Maze::RandomReturn()
 {
 	int t = existApplicableCell(curX, curY),  c;
 	if (t == 4) {
-		return (rand() % 3);
+		return (rand() % 4);
 	}
 	else if (t==3){
 		if (!OnlyCellApplicable(tryVec[curX][curY], "left")) {
 			return (rand() % 1 + 2);
 		}
 		else if (!OnlyCellApplicable(tryVec[curX][curY], "right")) {
-			c = rand() % 2;
+			c = rand() % 3;
 			switch (c) {
 			case 0: return 0; 
 			case 1: return 2;
@@ -242,7 +260,7 @@ int Maze::RandomReturn()
 			}
 		}
 		else if (!OnlyCellApplicable(tryVec[curX][curY], "up")) {
-			c = rand() % 2;
+			c = rand() % 3;
 			switch (c) {
 			case 0: return 0;
 			case 1: return 1;
@@ -250,7 +268,7 @@ int Maze::RandomReturn()
 			}
 		}
 		else if (!OnlyCellApplicable(tryVec[curX][curY], "down")) {
-			return (rand() % 2);
+			return (rand() % 3);
 		}
 		
 	}
@@ -259,35 +277,35 @@ int Maze::RandomReturn()
 			return (rand() % 2 + 1);
 		}
 		else if (!OnlyCellApplicable(tryVec[curX][curY], "left") && !OnlyCellApplicable(tryVec[curX][curY], "up")) {
-			c = rand() % 1;
+			c = rand() % 2;
 			switch (c) {
 			case 0: return 1;
 			case 1: return 3;
 			}
 		}
 		else if (!OnlyCellApplicable(tryVec[curX][curY], "left") && !OnlyCellApplicable(tryVec[curX][curY], "down")) {
-			c = rand() % 1;
+			c = rand() % 2;
 			switch (c) {
 			case 0: return 1;
 			case 1: return 2;
 			}
 		}
 		else if (!OnlyCellApplicable(tryVec[curX][curY], "right") && !OnlyCellApplicable(tryVec[curX][curY], "up")) {
-			c = rand() % 1;
+			c = rand() % 2;
 			switch (c) {
 			case 0: return 0;
 			case 1: return 3;
 			}
 		}
 		else if (!OnlyCellApplicable(tryVec[curX][curY], "right") && !OnlyCellApplicable(tryVec[curX][curY], "down")) {
-			c = rand() % 1;
+			c = rand() % 2;
 			switch (c) {
 			case 0: return 1;
 			case 1: return 2;
 			}
 		}
 		else if (!OnlyCellApplicable(tryVec[curX][curY], "up") && !OnlyCellApplicable(tryVec[curX][curY], "down")) {
-			return (rand() % 1);
+			return (rand() % 2);
 		}
 	}
 	else if (t == 1) {

@@ -20,7 +20,7 @@ struct Cell {
 class Maze
 {
 public:
-	Maze(int X=0, int Y=0);
+	Maze(int X=3, int Y=3);
 
 	bool CellApplicable(Cell& checkCell, const string& direction);
 	bool OnlyCellApplicable(Cell& checkCell, const string& direction); // does nothing but return a bool

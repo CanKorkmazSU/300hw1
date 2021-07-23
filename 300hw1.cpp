@@ -14,10 +14,10 @@ int main()
 	int K, M, N, inX, inY, outX,outY, mazeID;
 	cout << "Enter K, M, N" << endl;
 	cin >> K >> M >> N;
-	vector<Maze> mazeVec; // to store all Mazes
+	vector<Maze> mazeVec(K); // to store all Mazes
 
 	for (int i = 0; i < K; i++) {
-		mazeVec[i]= Maze(M,N);
+		mazeVec[i] =Maze(M,N);
 	}
 
 	ofstream ofStreamPrint, ofStreamPath;
@@ -26,7 +26,7 @@ int main()
 		ofStreamPrint.open(("Maze_" + to_string(i) + ".txt").c_str());
 		mazeVec[i].PrintFunction(ofStreamPrint);
 	}
-	cout << "Enter a maze ID between 1 to "<< K << "inclusive to find a path: ";
+	cout << "Enter a maze ID between 1 to "<< K << " inclusive to find a path: ";
 	cin >> mazeID;
 	cout << "Enter x and y coordinates of the entry points (x,y) or (column,row): ";
 	cin >> inX >> inY;

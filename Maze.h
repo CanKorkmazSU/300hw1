@@ -43,13 +43,15 @@ public:
 	int RandomReturn();
 
 
+
+	// path finding functions and implementation
 	int RandomReturnPathfinding();
 	int existApplicableCellPathfinding(int corX, int corY);
-	void whenNoneApplicableCellPathfinding(string prevDirection);
-	void ProcessCellsPathfinding(int cor1, int cor2, string direction);
+	void whenNoneApplicableCellPathfinding();
 	void PrintFunctionPathfinding(ofstream& toWrite);
 	bool StackCheckerDetailPathfinding(int corX, int corY);
 	void FillOriginalAgainPathfinding();
+	bool OnlyCellApplicablePathfinding(Cell& checkCell, const string& direction);
 
 
 private:

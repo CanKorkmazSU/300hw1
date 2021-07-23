@@ -4,8 +4,6 @@
 #include <string>
 #include <iostream>
 #include <random>
-#include <iomanip>
-#include <algorithm>
 using namespace std;
 
 // reimplement maze creation with a function in a neat-er style if you want
@@ -35,15 +33,6 @@ Maze::Maze(int X , int Y) {
 		return;
 	}
 	else if (M!=1 || N!=1) {
-		/*while (numBroken < 1) {
-			c = RandomReturn();
-			if (c == 0 && CellApplicable(tryVec[curX][curY], "up")) {
-				continue;
-			}
-			else if (c == 1 && CellApplicable(tryVec[curX][curY], "right")) {
-				continue;
-			}
-		}*/
 		c = rand() % 3;
 		while (numBroken < M * N - 1) {
 			if (existApplicableCell(curX, curX)) {
@@ -60,8 +49,6 @@ Maze::Maze(int X , int Y) {
 			}
 		}
 	}
-
-
 }
 
 
@@ -323,9 +310,41 @@ int Maze::RandomReturn()
 ///  path finding parth
 /// </summary>
 
-void Maze::PathFinding(ofstream & toWrite)
+void Maze::PathFinding(ofstream & toWrite, int pEntryX, int pEntryY, int pOutX, int pOutY)
 {
+	entryX = pEntryX; entryY = pEntryY; outX = pOutX; outY = pOutY;
+
+	curX = entryX; curY = entryY;
+	pathStack1.push(tryVec[curX][curY]);
+
+
 	
+
+
+
 }
 
 
+int Maze::RandomReturnPathfinding() {
+
+}
+
+// return num of applicable cells, to which algo can advance and whether it's the same as the reverse direciton
+int Maze::existApplicableCellPathfinding(int corX, int corY)
+{
+	string prevDir;
+	if (!stringStackPath.isEmpty()) {
+		prevDir = stringStackPath.topAndPop();
+		stringPoppedPath.push(prevDir);
+	}
+
+	return 0;
+}
+
+void Maze::whenNoneApplicableCellPathfinding(string prevDirection)
+{
+}
+
+void Maze::ProcessCellsPathfinding(int cor1, int cor2, string direction)
+{
+}

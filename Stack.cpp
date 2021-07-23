@@ -1,4 +1,3 @@
-
 #ifndef _STACK_CPP
 #define _STACK_CPP
 

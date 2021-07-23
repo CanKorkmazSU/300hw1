@@ -31,7 +31,7 @@ public:
 	void FillOriginalAgain();
 
 	void PrintFunction(ofstream & toWrite);
-	void PathFinding(ofstream & toWrite);
+	void PathFinding(ofstream & toWrite, int eX, int eY, int oX, int oY);
 
 	//check whether any wall to break or not, return number of breakable wall
 	int existApplicableCell(int corX, int corY);
@@ -42,15 +42,27 @@ public:
 	void ProcessCells(int cor1, int cor2, string direction);
 	int RandomReturn();
 
+
+	int RandomReturnPathfinding();
+	int existApplicableCellPathfinding(int corX, int corY);
+	void whenNoneApplicableCellPathfinding(string prevDirection);
+	void ProcessCellsPathfinding(int cor1, int cor2, string direction);
+	void PrintFunctionPathfinding(ofstream& toWrite);
+	bool StackCheckerDetailPathfinding(int corX, int corY);
+	void FillOriginalAgainPathfinding();
+
+
 private:
 	//K-> number of mazes, M: Xcoordintte(columns), N: Ycoordinate(rows)
-	int M , N, entryX, entryY;
+	int M , N, entryX, entryY, outX, outY;
 	
-	int curX , curY  , numBroken;
+	int curX , curY  , numBroken /*,pCurX, pCurY*/;
 
 	vector<vector<Cell>>  tryVec; // holds cells
 	Stack<Cell> mainStack, sideStack;
 	Stack<string> stringStack, stringPopped;// for directions
+
+	Stack<string> stringStackPath, stringPoppedPath;// for directions of second part
 	Stack<Cell> pathStack1, pathStack2;
 
 };

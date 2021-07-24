@@ -471,10 +471,14 @@ int Maze::RandomReturnPathfinding() {
 int Maze::existApplicableCellPathfinding(int corX, int corY)
 {
 	int count = 0;
-	if (corX + 1 < M && StackCheckerDetailPathfinding(corX + 1, corY))count++;
-	if (corX - 1 >= 0 && StackCheckerDetailPathfinding(corX - 1, corY))count++;
-	if (corY - 1 >= 0 && StackCheckerDetailPathfinding(corX, corY - 1))count++;
-	if (corY + 1 < N && StackCheckerDetailPathfinding(corX, corY + 1))count++;
+	if (corX + 1 < M && tryVec[corX][corY].r ==0 && StackCheckerDetailPathfinding(corX + 1, corY))
+		count++;
+	if (corX - 1 >= 0 && tryVec[corX][corY].l == 0 && StackCheckerDetailPathfinding(corX - 1, corY))
+		count++;
+	if (corY - 1 >= 0 && tryVec[corX][corY].d == 0 && StackCheckerDetailPathfinding(corX, corY - 1))
+		count++;
+	if (corY + 1 < N && tryVec[corX][corY].u == 0 && StackCheckerDetailPathfinding(corX, corY + 1))
+		count++;
 
 	return count;
 }
@@ -492,10 +496,10 @@ void Maze::whenNoneApplicableCellPathfinding()
 
 void Maze::PrintFunctionPathfinding(ofstream& toWrite)
 {
-	int x, y;
 	if (mainPathStack.isEmpty())
 		return;
 	else {
+		int x, y;
 		x = mainPathStack.topOfStack->element.coorX, y = mainPathStack.topOfStack->element.coorY;
 		mainPathStack.pop();
 		PrintFunctionPathfinding(toWrite);
@@ -508,26 +512,26 @@ void Maze::PrintFunctionPathfinding(ofstream& toWrite)
 // update: re-implemented, prolly working nwo
 bool Maze::OnlyCellApplicablePathfinding(Cell& checkCell, const string& direction)
 {
-	if (direction == "up" && checkCell.coorY + 1 < N ) {
-		if (StackCheckerDetailPathfinding(checkCell.coorX, checkCell.coorY + 1)) {
+	if (direction == "up" &&  checkCell.coorY + 1 < N ) {
+		if (tryVec[curX][curY].u == 0 &&  StackCheckerDetailPathfinding(checkCell.coorX, checkCell.coorY + 1)) {
 			return true;
 		}
 		else return false;
 	}
 	else if (direction == "down" && checkCell.coorY - 1 >= 0 ) {
-		if (StackCheckerDetailPathfinding(checkCell.coorX, checkCell.coorY - 1)) {
+		if (tryVec[curX][curY].d == 0 && StackCheckerDetailPathfinding(checkCell.coorX, checkCell.coorY - 1)) {
 			return true;
 		}
 		else return false;
 	}
 	else if (direction == "left" && checkCell.coorX - 1 >= 0 ) {
-		if (StackCheckerDetailPathfinding(checkCell.coorX - 1, checkCell.coorY)) {
+		if (tryVec[curX][curY].l == 0 && StackCheckerDetailPathfinding(checkCell.coorX - 1, checkCell.coorY)) {
 			return true;
 		}
 		else return false;
 	}
 	else if (direction == "right" && checkCell.coorX + 1 < M ) {
-		if (StackCheckerDetailPathfinding(checkCell.coorX + 1, checkCell.coorY)) {
+		if (tryVec[curX][curY].r == 0 && StackCheckerDetailPathfinding(checkCell.coorX + 1, checkCell.coorY)) {
 			return true;
 		}
 		else return false;

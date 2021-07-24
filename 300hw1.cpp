@@ -39,6 +39,6 @@ int main()
 
 	ofStreamPath.open(outPathString.c_str());
 	mazeVec[mazeID-1].PathFinding(ofStreamPath, inX, inY, outX, outY);
+	ofStreamPath.PrintFunctionPathfinding(ofStreamPath);
 	ofStreamPath.close();
 }
-

@@ -164,7 +164,6 @@ void Maze::FillOriginalAgain()
 		mainStack.push(popped);
 	}
 }
-
 void Maze::PrintFunction(ofstream & toWrite)
 {
 	toWrite << M << " " << N << endl;
@@ -215,7 +214,7 @@ void Maze::whenNoneApplicableCell(string prevDirection)
 	}
 }
 
-// process both cells (wall stiuations) and change curX and curY
+// process both cells(current and target approved) (wall stiuations) and change curX and curY
 void Maze::ProcessCells(int cor1, int cor2, string direction)
 {
 	if (direction == "up") {
@@ -243,7 +242,7 @@ void Maze::ProcessCells(int cor1, int cor2, string direction)
 		numBroken++;
 	}
 }
-
+//random return generator in compliance with existing cell situation
 int Maze::RandomReturn()
 {
 	int t = existApplicableCell(curX, curY),  c;
@@ -336,7 +335,7 @@ int Maze::RandomReturn()
 
 
 /// <summary>
-///  path finding parth
+///  path finding part
 /// </summary>
 
 void Maze::PathFinding(ofstream & toWrite, int pEntryX, int pEntryY, int pOutX, int pOutY)
@@ -344,27 +343,26 @@ void Maze::PathFinding(ofstream & toWrite, int pEntryX, int pEntryY, int pOutX, 
 	entryX = pEntryX; entryY = pEntryY; outX = pOutX; outY = pOutY;
 
 	curX = entryX; curY = entryY;
-	pathStack1.push(tryVec[curX][curY]);
+	mainPathStack.push(tryVec[curX][curY]);
 	int c;
-
 	while (curX != outX && curY != outY) {
-		if (existApplicableCellPathfinding(curX, curX)) {
+		if (existApplicableCellPathfinding(curX, curY)) {
 			c = RandomReturn();
 			switch (c) {
 			case 0: OnlyCellApplicablePathfinding(tryVec[curX][curY], "left");
-				pathStack1.push(tryVec[--curX][curY]);
+				mainPathStack.push(tryVec[--curX][curY]);
 				stringStackPath.push("left");
 				break;
 			case 1: OnlyCellApplicablePathfinding(tryVec[curX][curY], "right");
-				pathStack1.push(tryVec[++curX][curY]);
+				mainPathStack.push(tryVec[++curX][curY]);
 				stringStackPath.push("right");
 				break;
 			case 2: OnlyCellApplicablePathfinding(tryVec[curX][curY], "up"); 
-				pathStack1.push(tryVec[curX][++curY]);
+				mainPathStack.push(tryVec[curX][++curY]);
 				stringStackPath.push("up"); 
 				break;
 			case 3: OnlyCellApplicablePathfinding(tryVec[curX][curY], "down"); 
-				pathStack1.push(tryVec[curX][--curY]);
+				mainPathStack.push(tryVec[curX][--curY]);
 				stringStackPath.push("down"); 
 				break;
 			}
@@ -373,7 +371,7 @@ void Maze::PathFinding(ofstream & toWrite, int pEntryX, int pEntryY, int pOutX, 
 	}
 }
 
-// implementation completed
+// implementation completed but check again
 int Maze::RandomReturnPathfinding() {
 
 	int t = existApplicableCellPathfinding(curX, curY), c;
@@ -460,8 +458,8 @@ int Maze::RandomReturnPathfinding() {
 	return INT_MAX;
 }
 
-// return num of applicable cells, to which algo can advance and whether it's the same as the reverse direciton
-// implementation completed
+// return num of applicable cells, to which algo can advance in consideration with sameness as the reverse direciton
+// implementation completed but check again
 int Maze::existApplicableCellPathfinding(int corX, int corY)
 {
 	string prevDir;
@@ -482,64 +480,60 @@ int Maze::existApplicableCellPathfinding(int corX, int corY)
 	}
 	else if (stringStackPath.isEmpty()) {
 		int count = 0;
-		if (tryVec[corX][corY].r == 0) {
-			count++;
-			/*pathStack1.push(tryVec[corX+1][corY]);
-			stringStackPath.push("right");*/
-		}
-		else if (tryVec[corX][corY].l == 0) {
-			count++;
-			/*pathStack1.push(tryVec[corX-1][corY]);
-			stringStackPath.push("left");*/
-		}
-		else if (tryVec[corX][corY].d == 0) {
-			/*pathStack1.push(tryVec[corX][corY-1]);
-			stringStackPath.push("down");*/
-			count++;
-		}
-		else if (tryVec[corX][corY].u == 0) {
-			count++;
-			/*pathStack1.push(tryVec[corX][corY+1]);
-			stringStackPath.push("up");*/
-		}
+		if (tryVec[corX][corY].r == 0) count++;
+		else if (tryVec[corX][corY].l == 0) count++;
+		else if (tryVec[corX][corY].d == 0) count++;
+		else if (tryVec[corX][corY].u == 0) count++;
+		
 		return count;
 	}
 	return INT_MAX;
 }
 
 // call if you diverge into wrong path
-// implementation complete
+// implementation complete 
 void Maze::whenNoneApplicableCellPathfinding()
 {
-	string prev;
-	while (existApplicableCellPathfinding(curX, curY) != 0) {
-		prev = stringStackPath.topAndPop();
-		stringPoppedPath.push(prev);
-		if (prev == "left") {
-			curX++;
-			stringStackPath.push("right");
-		}
-		else if (prev == "right") {
-			curX--;
-			stringStackPath.push("left");
-		}
-		else if (prev == "up") {
-			curY--;
-			stringStackPath.push("down");
-		}
-		else if (prev == "down") {
-			curY++;
-			stringStackPath.push("up");
-		}
-	}
+	string prev= stringStackPath.topAndPop();;
+	if (prev == "left") curX++;
+	else if (prev == "right") curX--;
+	else if (prev == "up") curY--;
+	else if (prev == "down") curY++;
 }
 
 // implementation failed, re-implement
 bool Maze::OnlyCellApplicablePathfinding(Cell& checkCell, const string& direction)
 {
 	if (direction == "up" && checkCell.coorY + 1 < N && stringStackPath.top()!= "up") return true;
+
 	else if (direction == "down" && checkCell.coorY - 1 >= 0 && stringStackPath.top() != "down") return true;
 	else if (direction == "left" && checkCell.coorX - 1 >= 0&& stringStackPath.top() != "left") return true;
 	else if (direction == "right" && checkCell.coorX + 1 < M && stringStackPath.top() != "right") return true;
 	return false;
+}
+
+//implementation complete
+bool Maze::StackCheckerDetailPathfinding(int corX, int corY)
+{
+	Cell popped;
+	while (!mainPathStack.isEmpty()) {
+		popped = mainPathStack.topAndPop();
+		sidePathStack.push(popped);
+		if ((corX == popped.coorX && corY == popped.coorY)) {
+			FillOriginalAgainPathfinding();
+			return false;
+		}
+	}
+	FillOriginalAgainPathfinding();
+	return true;
+}
+
+// implementation complete
+void Maze::FillOriginalAgainPathfinding()
+{
+	Cell popped;
+	while (!sidePathStack.isEmpty()) {
+		popped = sidePathStack.topAndPop();
+		mainPathStack.push(popped);
+	}
 }

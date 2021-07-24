@@ -52,7 +52,7 @@ public:
 	bool StackCheckerDetailPathfinding(int corX, int corY);
 	void FillOriginalAgainPathfinding();
 	bool OnlyCellApplicablePathfinding(Cell& checkCell, const string& direction);
-
+	void FillOriginalAgainPathfinding();
 
 private:
 	//K-> number of mazes, M: Xcoordintte(columns), N: Ycoordinate(rows)
@@ -61,11 +61,8 @@ private:
 	int curX , curY  , numBroken /*,pCurX, pCurY*/;
 
 	vector<vector<Cell>>  tryVec; // holds cells
-	Stack<Cell> mainStack, sideStack;
-	Stack<string> stringStack;// for directions
-
-	Stack<string> stringStackPath, stringPoppedPath;// for directions of second part
-	Stack<Cell> pathStack1, pathStack2;
+	Stack<Cell> mainStack, sideStack, mainPathStack, sidePathStack;
+	Stack<string> stringStack, stringStackPath;// for directions
 
 };
 

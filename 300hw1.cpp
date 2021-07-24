@@ -12,11 +12,8 @@ int main()
 	int K, M, N, inX, inY, outX,outY, mazeID;
 	cout << "Enter K, M, N" << endl;
 	cin >> K >> M >> N;
-	vector<Maze> mazeVec(K); // to store all Mazes
+	vector<Maze> mazeVec(K, Maze(M,N)); // to store all Mazes
 
-	for (int i = 0; i < K; i++) {
-		mazeVec[i] =Maze(M,N);
-	}
 
 	ofstream ofStreamPrint, ofStreamPath;
 

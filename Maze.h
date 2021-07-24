@@ -19,31 +19,30 @@ struct Cell {
 class Maze
 {
 public:
-	Maze(int X=3, int Y=3);
+	Maze(int X, int Y);
 
+	// function for adding cell to the stack according to the rules and other functions
 	bool CellApplicable(Cell& checkCell, const string& direction);
 	bool OnlyCellApplicable(Cell& checkCell, const string& direction); // does nothing but return a bool
 
-	
-	//void AddToStackMain(Cell & checkedCell);
+	//check if cell at (corX, corY) already exists in stack or not
 	bool StackCheckerDetail(int corX, int corY);
-	void FillOriginalAgain();
 
+	void FillOriginalAgain();
 	void PrintFunction(ofstream & toWrite);
-	void PathFinding(ofstream & toWrite, int eX, int eY, int oX, int oY);
 
 	//check whether any wall to break or not, return number of breakable wall
 	int existApplicableCell(int corX, int corY);
 
 	// call when no applicable cells exist to go, dont forget to update curX and curY, also process stacks
 	void whenNoneApplicableCell(string prevDirection);
-
 	void ProcessCells(int cor1, int cor2, string direction);
 	int RandomReturn();
 
 
 
 	// path finding functions and implementation
+	void PathFinding(ofstream& toWrite, int eX, int eY, int oX, int oY);
 	int RandomReturnPathfinding();
 	int existApplicableCellPathfinding(int corX, int corY);
 	void whenNoneApplicableCellPathfinding();
@@ -63,10 +62,3 @@ private:
 	Stack<string> stringStack, stringStackPath;// for directions
 
 };
-
-
-// to do *****
-//
-//implement the existApplicableCell and later path finding
-//for existApplicableCell, you need prolly. to more functions; random
-

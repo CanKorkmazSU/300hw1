@@ -1,7 +1,7 @@
 #ifndef _STACK_CPP
 #define _STACK_CPP
 
-// this code is taken from cs300 lecture slides
+// code is taken from cs300 lecture slides
 #include <assert.h>
 #include "Stack.h"
 
@@ -90,4 +90,4 @@ Stack<Object>::~Stack()
 }
 
 
-#endif // !1
+#endif 

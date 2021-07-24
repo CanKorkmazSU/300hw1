@@ -6,7 +6,6 @@
 #include <random>
 using namespace std;
 
-// reimplement maze creation with a function in a neat-er style if you want
 Maze::Maze(int X , int Y) {
 	M = X, N = Y;
 	curX = 0, curY = 0;
@@ -378,7 +377,6 @@ void Maze::PathFinding(ofstream & toWrite, int pEntryX, int pEntryY, int pOutX, 
 	toWrite.close();
 }
 
-// implementation completed but check again
 int Maze::RandomReturnPathfinding() {
 
 	int t = existApplicableCellPathfinding(curX, curY), c;
@@ -465,9 +463,7 @@ int Maze::RandomReturnPathfinding() {
 	return INT_MAX;
 }
 
-// return num of applicable cells, to which algo can advance in consideration with sameness as the reverse direciton
-// implementation completed but check again,
-// update: re-implemented, needs testing
+// return num of cells available to go
 int Maze::existApplicableCellPathfinding(int corX, int corY)
 {
 	int count = 0;
@@ -483,15 +479,18 @@ int Maze::existApplicableCellPathfinding(int corX, int corY)
 	return count;
 }
 
-// call if you diverge into wrong path
-// implementation complete 
+// when there is no cell to go, go back to the last Cell 
 void Maze::whenNoneApplicableCellPathfinding()
 {
 	string prev= stringStackPath.topAndPop();;
-	if (prev == "left") curX++;
-	else if (prev == "right") curX--;
-	else if (prev == "up") curY--;
-	else if (prev == "down") curY++;
+	if (prev == "left")
+		curX++;
+	else if (prev == "right") 
+		curX--;
+	else if (prev == "up") 
+		curY--;
+	else if (prev == "down")
+		curY++;
 }
 
 void Maze::PrintFunctionPathfinding(ofstream& toWrite)
@@ -508,8 +507,7 @@ void Maze::PrintFunctionPathfinding(ofstream& toWrite)
 
 }
 
-// implementation failed, re-implement
-// update: re-implemented, prolly working nwo
+//check if algo can or should reach the Cell that is at current Cell's direction 
 bool Maze::OnlyCellApplicablePathfinding(Cell& checkCell, const string& direction)
 {
 	if (direction == "up" &&  checkCell.coorY + 1 < N ) {
@@ -539,7 +537,7 @@ bool Maze::OnlyCellApplicablePathfinding(Cell& checkCell, const string& directio
 	return false;
 }
 
-//implementation complete
+//Checks whether algo has already visited that cell or not, by using stack data structures
 bool Maze::StackCheckerDetailPathfinding(int corX, int corY)
 {
 	Cell popped;
@@ -555,7 +553,6 @@ bool Maze::StackCheckerDetailPathfinding(int corX, int corY)
 	return true;
 }
 
-// implementation complete
 void Maze::FillOriginalAgainPathfinding()
 {
 	Cell popped;

@@ -344,30 +344,38 @@ void Maze::PathFinding(ofstream & toWrite, int pEntryX, int pEntryY, int pOutX, 
 	curX = entryX; curY = entryY;
 	mainPathStack.push(tryVec[curX][curY]);
 	int c;
-	while (curX != outX && curY != outY) {
+	while (curX != outX || curY != outY) {
 		if (existApplicableCellPathfinding(curX, curY)) {
-			c = RandomReturn();
+			c = RandomReturnPathfinding();
 			switch (c) {
-			case 0: OnlyCellApplicablePathfinding(tryVec[curX][curY], "left");
+			case 0: 
+				if (OnlyCellApplicablePathfinding(tryVec[curX][curY], "left")) {
 				mainPathStack.push(tryVec[--curX][curY]);
 				stringStackPath.push("left");
+				}
 				break;
-			case 1: OnlyCellApplicablePathfinding(tryVec[curX][curY], "right");
+			case 1:
+				if (OnlyCellApplicablePathfinding(tryVec[curX][curY], "right")) {
 				mainPathStack.push(tryVec[++curX][curY]);
 				stringStackPath.push("right");
+				}
 				break;
-			case 2: OnlyCellApplicablePathfinding(tryVec[curX][curY], "up"); 
+			case 2: if (OnlyCellApplicablePathfinding(tryVec[curX][curY], "up")) {
 				mainPathStack.push(tryVec[curX][++curY]);
 				stringStackPath.push("up"); 
+				}
 				break;
-			case 3: OnlyCellApplicablePathfinding(tryVec[curX][curY], "down"); 
+			case 3: if (OnlyCellApplicablePathfinding(tryVec[curX][curY], "down")) {
 				mainPathStack.push(tryVec[curX][--curY]);
 				stringStackPath.push("down"); 
+				}
 				break;
 			}
 		}
 		else whenNoneApplicableCellPathfinding();
 	}
+	PrintFunctionPathfinding(toWrite);
+	toWrite.close();
 }
 
 // implementation completed but check again
@@ -467,6 +475,7 @@ int Maze::existApplicableCellPathfinding(int corX, int corY)
 	if (corX - 1 >= 0 && StackCheckerDetailPathfinding(corX - 1, corY))count++;
 	if (corY - 1 >= 0 && StackCheckerDetailPathfinding(corX, corY - 1))count++;
 	if (corY + 1 < N && StackCheckerDetailPathfinding(corX, corY + 1))count++;
+
 	return count;
 }
 
@@ -483,6 +492,15 @@ void Maze::whenNoneApplicableCellPathfinding()
 
 void Maze::PrintFunctionPathfinding(ofstream& toWrite)
 {
+	int x, y;
+	if (mainPathStack.isEmpty())
+		return;
+	else {
+		x = mainPathStack.topOfStack->element.coorX, y = mainPathStack.topOfStack->element.coorY;
+		mainPathStack.pop();
+		PrintFunctionPathfinding(toWrite);
+		toWrite << x << " " << y << endl;
+	}
 
 }
 
@@ -491,23 +509,27 @@ void Maze::PrintFunctionPathfinding(ofstream& toWrite)
 bool Maze::OnlyCellApplicablePathfinding(Cell& checkCell, const string& direction)
 {
 	if (direction == "up" && checkCell.coorY + 1 < N ) {
-		if (StackCheckerDetailPathfinding(checkCell.coorX, checkCell.coorY + 1)) 
+		if (StackCheckerDetailPathfinding(checkCell.coorX, checkCell.coorY + 1)) {
 			return true;
+		}
 		else return false;
 	}
-	else if (direction == "down" && checkCell.coorY - 1 >= 0 && stringStackPath.top() != "down") {
-		if (StackCheckerDetailPathfinding(checkCell.coorX, checkCell.coorY - 1))
+	else if (direction == "down" && checkCell.coorY - 1 >= 0 ) {
+		if (StackCheckerDetailPathfinding(checkCell.coorX, checkCell.coorY - 1)) {
 			return true;
+		}
 		else return false;
 	}
-	else if (direction == "left" && checkCell.coorX - 1 >= 0 && stringStackPath.top() != "left") {
-		if (StackCheckerDetailPathfinding(checkCell.coorX-1, checkCell.coorY ))
+	else if (direction == "left" && checkCell.coorX - 1 >= 0 ) {
+		if (StackCheckerDetailPathfinding(checkCell.coorX - 1, checkCell.coorY)) {
 			return true;
+		}
 		else return false;
 	}
-	else if (direction == "right" && checkCell.coorX + 1 < M && stringStackPath.top() != "right") {
-		if (StackCheckerDetailPathfinding(checkCell.coorX + 1, checkCell.coorY))
+	else if (direction == "right" && checkCell.coorX + 1 < M ) {
+		if (StackCheckerDetailPathfinding(checkCell.coorX + 1, checkCell.coorY)) {
 			return true;
+		}
 		else return false;
 	}
 	return false;

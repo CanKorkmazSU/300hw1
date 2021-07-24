@@ -1,6 +1,7 @@
 #ifndef _STACK_CPP
 #define _STACK_CPP
 
+// this code is taken from cs300 lecture slides
 #include <assert.h>
 #include "Stack.h"
 
@@ -18,7 +19,7 @@ bool Stack<Object>::isFull() const
 template <class Object>
 bool Stack<Object>::isEmpty() const
 {
-    return topOfStack == NULL;
+    return (topOfStack == NULL);
 }
 template <class Object>
 const Object& Stack<Object>::top() const

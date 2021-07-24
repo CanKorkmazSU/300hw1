@@ -1,9 +1,8 @@
 #pragma once
-
 #include <vector>
 #include "Stack.h"
 #include <string>
-#include <random>
+#include "stdlib.h"
 #include <fstream>
 
 using namespace std;
@@ -52,7 +51,6 @@ public:
 	bool StackCheckerDetailPathfinding(int corX, int corY);
 	void FillOriginalAgainPathfinding();
 	bool OnlyCellApplicablePathfinding(Cell& checkCell, const string& direction);
-	void FillOriginalAgainPathfinding();
 
 private:
 	//K-> number of mazes, M: Xcoordintte(columns), N: Ycoordinate(rows)

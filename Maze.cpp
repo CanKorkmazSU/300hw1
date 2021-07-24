@@ -109,7 +109,6 @@ bool Maze::CellApplicable(Cell& checkCell, const string & direction)
 // doesnt alter any private value, only checks if the prev cell and direction is applicable
 bool Maze::OnlyCellApplicable(Cell& checkCell, const string& direction)
 {
-
 	if (direction == "up" && checkCell.coorY + 1 < N) {
 		if (StackCheckerDetail(checkCell.coorX, checkCell.coorY + 1)) {
 			return true;
@@ -459,35 +458,16 @@ int Maze::RandomReturnPathfinding() {
 }
 
 // return num of applicable cells, to which algo can advance in consideration with sameness as the reverse direciton
-// implementation completed but check again
+// implementation completed but check again,
+// update: re-implemented, needs testing
 int Maze::existApplicableCellPathfinding(int corX, int corY)
 {
-	string prevDir;
-	if (!stringStackPath.isEmpty()) {
-		prevDir = stringStackPath.top();
-		int count = 0;
-
-		if (tryVec[corX][corY].r == 0 && prevDir != "left")// right
-			count++;
-		else if (tryVec[corX][corY].l == 0 && prevDir != "right")//left
-			count++;
-		else if (tryVec[corX][corY].d == 0 && prevDir != "up")//down
-			count++;
-		else if (tryVec[corX][corY].u == 0 && prevDir != "down")
-			count++;
-		return count;
-
-	}
-	else if (stringStackPath.isEmpty()) {
-		int count = 0;
-		if (tryVec[corX][corY].r == 0) count++;
-		else if (tryVec[corX][corY].l == 0) count++;
-		else if (tryVec[corX][corY].d == 0) count++;
-		else if (tryVec[corX][corY].u == 0) count++;
-		
-		return count;
-	}
-	return INT_MAX;
+	int count = 0;
+	if (corX + 1 < M && StackCheckerDetailPathfinding(corX + 1, corY))count++;
+	if (corX - 1 >= 0 && StackCheckerDetailPathfinding(corX - 1, corY))count++;
+	if (corY - 1 >= 0 && StackCheckerDetailPathfinding(corX, corY - 1))count++;
+	if (corY + 1 < N && StackCheckerDetailPathfinding(corX, corY + 1))count++;
+	return count;
 }
 
 // call if you diverge into wrong path
@@ -501,14 +481,35 @@ void Maze::whenNoneApplicableCellPathfinding()
 	else if (prev == "down") curY++;
 }
 
+void Maze::PrintFunctionPathfinding(ofstream& toWrite)
+{
+
+}
+
 // implementation failed, re-implement
+// update: re-implemented, prolly working nwo
 bool Maze::OnlyCellApplicablePathfinding(Cell& checkCell, const string& direction)
 {
-	if (direction == "up" && checkCell.coorY + 1 < N && stringStackPath.top()!= "up") return true;
-
-	else if (direction == "down" && checkCell.coorY - 1 >= 0 && stringStackPath.top() != "down") return true;
-	else if (direction == "left" && checkCell.coorX - 1 >= 0&& stringStackPath.top() != "left") return true;
-	else if (direction == "right" && checkCell.coorX + 1 < M && stringStackPath.top() != "right") return true;
+	if (direction == "up" && checkCell.coorY + 1 < N ) {
+		if (StackCheckerDetailPathfinding(checkCell.coorX, checkCell.coorY + 1)) 
+			return true;
+		else return false;
+	}
+	else if (direction == "down" && checkCell.coorY - 1 >= 0 && stringStackPath.top() != "down") {
+		if (StackCheckerDetailPathfinding(checkCell.coorX, checkCell.coorY - 1))
+			return true;
+		else return false;
+	}
+	else if (direction == "left" && checkCell.coorX - 1 >= 0 && stringStackPath.top() != "left") {
+		if (StackCheckerDetailPathfinding(checkCell.coorX-1, checkCell.coorY ))
+			return true;
+		else return false;
+	}
+	else if (direction == "right" && checkCell.coorX + 1 < M && stringStackPath.top() != "right") {
+		if (StackCheckerDetailPathfinding(checkCell.coorX + 1, checkCell.coorY))
+			return true;
+		else return false;
+	}
 	return false;
 }
 

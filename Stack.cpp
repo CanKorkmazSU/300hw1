@@ -23,7 +23,7 @@ bool Stack<Object>::isEmpty() const
 template <class Object>
 const Object& Stack<Object>::top() const
 {
-    assert(!isEmpty());
+    assert("emptry stack assertation", !isEmpty());
 
    /* if (isEmpty())
         throw Underflow();*/
